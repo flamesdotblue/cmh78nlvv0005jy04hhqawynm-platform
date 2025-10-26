@@ -1,28 +1,40 @@
-import { useState } from 'react'
+import { useRef } from 'react';
+import HeroPortal from './components/HeroPortal';
+import ChaosBefore from './components/ChaosBefore';
+import Transformation from './components/Transformation';
+import FlowVisualization from './components/FlowVisualization';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const chaosRef = useRef(null);
+  const transformRef = useRef(null);
+  const flowRef = useRef(null);
+
+  const scrollTo = (ref) => {
+    if (!ref?.current) return;
+    ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div className="bg-black text-white min-h-screen font-inter selection:bg-white/10 selection:text-white">
+      <HeroPortal onEnter={() => scrollTo(chaosRef)} />
 
-export default App
+      <section ref={chaosRef} className="relative min-h-screen overflow-hidden">
+        <ChaosBefore onContinue={() => scrollTo(transformRef)} />
+      </section>
+
+      <section ref={transformRef} className="relative min-h-screen overflow-hidden">
+        <Transformation onContinue={() => scrollTo(flowRef)} />
+      </section>
+
+      <section ref={flowRef} className="relative min-h-screen overflow-hidden">
+        <FlowVisualization />
+      </section>
+
+      <footer className="relative py-10 text-center text-sm text-white/60">
+        <div className="max-w-6xl mx-auto px-6">
+          © {new Date().getFullYear()} WedTrust — Where Weddings Meet Assurance
+        </div>
+      </footer>
+    </div>
+  );
+}
